@@ -2,7 +2,7 @@ import { VottAsset, VottAssetItem } from "./vottAsset";
 
 export const VottProviderType = {
   Local: "localFileSystemProxy",
-  Azure: "AzureBlobStorage",
+  Azure: "azureBlobStorage",
 } as const;
 export type VottProviderType = typeof VottProviderType[keyof typeof VottProviderType];
 
