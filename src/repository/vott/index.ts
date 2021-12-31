@@ -2,14 +2,12 @@ import * as md5 from "md5";
 import IDownloader from "../../views/downloader/interface";
 import IVottFileProvider from "../../datastore/vottFileProvider/interface";
 import IZipFileProvider from "../../datastore/zipFileProvider/interface";
-import { VottModel, VottProject, VottProviderType } from "../../models/vottProject";
-import IVottProvider from "./interface";
+import { VottModel, VottProviderType } from "../../models/vottProject";
+import { IVottProvider, VottAssetMapper } from "./interface";
 import { VottProjectSetting, VottConnectionSetting, VottConnectionSettingItem } from "../../models/vottSetting";
 import { encryptObject } from "../../libs/crypto";
-import { VottAsset, VottAssetItem, VottAssetType } from "../../models/vottAsset";
+import { VottAssetItem, VottAssetType } from "../../models/vottAsset";
 import { ErrorCode, VottConversionError } from "../../models/error";
-
-type VottAssetMapper = { [id: string]: VottAsset };
 
 export default class VottProvider implements IVottProvider {
   private zipFileProvider: IZipFileProvider;
@@ -22,7 +20,6 @@ export default class VottProvider implements IVottProvider {
     this.downloader = downloader;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private createNewAssetItem(srcTarget: VottAssetItem, newDirName: string, azureSas?: string): VottAssetItem {
     const { type, name, timestamp, parent } = srcTarget;
     const baseName = name.split("?")[0].split("#")[0];
@@ -60,8 +57,7 @@ export default class VottProvider implements IVottProvider {
     throw new VottConversionError(ErrorCode.InvalidAssetType);
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private mappingNewAssets(vottModel: VottModel, setting: VottProjectSetting): VottAssetMapper {
+  public mappingNewAssets(vottModel: VottModel, setting: VottProjectSetting): VottAssetMapper {
     const mapper: VottAssetMapper = {};
     const { sourceConnection } = setting;
     const newDirPath = (() => {
@@ -98,11 +94,8 @@ export default class VottProvider implements IVottProvider {
     return connection.azureBlobSetting ? "azureBlobStorage" : "localFileSystemProxy";
   }
 
-  private static updateProject(
-    vottModel: VottModel,
-    mapper: VottAssetMapper,
-    setting: VottProjectSetting
-  ): VottProject {
+  // eslint-disable-next-line class-methods-use-this
+  public updateProject(vottModel: VottModel, mapper: VottAssetMapper, setting: VottProjectSetting): VottModel {
     const { project } = vottModel;
     project.assets = {};
     Object.values(mapper).forEach((v) => {
@@ -129,10 +122,12 @@ export default class VottProvider implements IVottProvider {
         encrypted: targetConnectionEncrypted,
       },
     };
-    return project;
+    return {
+      project,
+      assets: Object.values(mapper),
+    };
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
   public async saveAsync(vottModel: VottModel): Promise<void> {
     const files = this.vottFileProvider.toFiles(vottModel);
     const file = await this.zipFileProvider.compress(files, "vott_migrated.zip").catch(() => {
@@ -146,18 +141,5 @@ export default class VottProvider implements IVottProvider {
       return Promise.reject(new VottConversionError(ErrorCode.InvalidZipFile));
     });
     return this.vottFileProvider.loads(files);
-  }
-
-  public async convertAsync(vottModel: VottModel, setting: VottProjectSetting): Promise<VottModel> {
-    try {
-      const mapper = this.mappingNewAssets(vottModel, setting);
-      const project = VottProvider.updateProject(vottModel, mapper, setting);
-      return {
-        project,
-        assets: Object.values(mapper),
-      };
-    } catch (e) {
-      return Promise.reject(e);
-    }
   }
 }

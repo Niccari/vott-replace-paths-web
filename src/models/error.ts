@@ -13,8 +13,7 @@ export type ErrorCode = typeof ErrorCode[keyof typeof ErrorCode];
 export class VottConversionError extends Error {
   public errorCode: ErrorCode;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-member-accessibility
-  constructor(errorCode: ErrorCode, e?: string) {
+  public constructor(errorCode: ErrorCode, e?: string) {
     super(e);
     this.errorCode = errorCode;
     this.name = new.target.name;
