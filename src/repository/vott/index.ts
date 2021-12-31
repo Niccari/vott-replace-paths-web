@@ -20,14 +20,19 @@ export default class VottProvider implements IVottProvider {
     this.downloader = downloader;
   }
 
-  private createNewAssetItem(srcTarget: VottAssetItem, newDirName: string, azureSas?: string): VottAssetItem {
+  private createNewAssetItem(
+    srcTarget: VottAssetItem,
+    newDirName: string,
+    pathDelimiter: string,
+    azureSas?: string
+  ): VottAssetItem {
     const { type, name, timestamp, parent } = srcTarget;
     const baseName = name.split("?")[0].split("#")[0];
 
-    const newParent = parent ? this.createNewAssetItem(parent, newDirName, azureSas) : undefined;
+    const newParent = parent ? this.createNewAssetItem(parent, newDirName, pathDelimiter, azureSas) : undefined;
     if (type === VottAssetType.Image || type === VottAssetType.Video) {
       const path = azureSas ? `${baseName}${azureSas}` : baseName;
-      const newPath = `${newDirName}/${path}`;
+      const newPath = `${newDirName}${pathDelimiter}${path}`;
       const result: VottAssetItem = {
         ...srcTarget,
         id: md5(newPath),
@@ -42,7 +47,7 @@ export default class VottProvider implements IVottProvider {
     if (type === VottAssetType.VideoFrame) {
       const newBaseName = azureSas ? `${baseName}${azureSas}` : baseName;
       const newName = `${newBaseName}#t=${timestamp}`;
-      const newPath = `${newDirName}/${newName}`;
+      const newPath = `${newDirName}${pathDelimiter}${newName}`;
       const result: VottAssetItem = {
         ...srcTarget,
         id: md5(newPath),
@@ -70,11 +75,13 @@ export default class VottProvider implements IVottProvider {
       }
       throw new VottConversionError(ErrorCode.InvalidFileProvider);
     })();
+    const isWindowsFileSystem = /^[A-Z]:(¥[^¥ ]*[^¥])+$/g.test(sourceConnection.localFileSetting?.folderPath ?? "");
+    const pathDelimiter = isWindowsFileSystem ? "¥" : "/";
     vottModel.assets.forEach((assetParent) => {
       const { asset } = assetParent;
       mapper[asset.id] = {
         ...assetParent,
-        asset: this.createNewAssetItem(asset, newDirPath, sourceConnection.azureBlobSetting?.sas),
+        asset: this.createNewAssetItem(asset, newDirPath, pathDelimiter, sourceConnection.azureBlobSetting?.sas),
       };
     });
     return mapper;
