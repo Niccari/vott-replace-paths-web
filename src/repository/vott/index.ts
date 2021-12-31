@@ -2,7 +2,7 @@ import * as md5 from "md5";
 import IDownloader from "../../views/downloader/interface";
 import IVottFileProvider from "../../datastore/vottFileProvider/interface";
 import IZipFileProvider from "../../datastore/zipFileProvider/interface";
-import { VottModel, VottProject } from "../../models/vottProject";
+import { VottModel, VottProject, VottProviderType } from "../../models/vottProject";
 import IVottProvider from "./interface";
 import { VottProjectSetting, VottConnectionSetting, VottConnectionSettingItem } from "../../models/vottSetting";
 import { encryptObject } from "../../libs/crypto";
@@ -94,6 +94,10 @@ export default class VottProvider implements IVottProvider {
     throw new VottConversionError(ErrorCode.InvalidFileProvider);
   }
 
+  private static toFileProvider(connection: VottConnectionSetting): VottProviderType {
+    return connection.azureBlobSetting ? "azureBlobStorage" : "localFileSystemProxy";
+  }
+
   private static updateProject(
     vottModel: VottModel,
     mapper: VottAssetMapper,
@@ -114,13 +118,13 @@ export default class VottProvider implements IVottProvider {
     const targetConnectionEncrypted = encryptObject(target, securityToken);
 
     project.sourceConnection = {
-      providerType: sourceConnection.azureBlobSetting ? "AzureBlobStorage" : "localFileSystemProxy",
+      providerType: VottProvider.toFileProvider(sourceConnection),
       providerOptions: {
         encrypted: sourceConnectionEncrypted,
       },
     };
     project.targetConnection = {
-      providerType: targetConnection.azureBlobSetting ? "AzureBlobStorage" : "localFileSystemProxy",
+      providerType: VottProvider.toFileProvider(targetConnection),
       providerOptions: {
         encrypted: targetConnectionEncrypted,
       },
