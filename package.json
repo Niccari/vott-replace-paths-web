@@ -38,5 +38,17 @@
     "crypto-js": "^4.1.1",
     "jszip": "^3.7.1",
     "md5": "^2.3.0"
+  },
+  "browserslist": {
+    "production": [
+      "> 0.5%",
+      "not dead",
+      "not ie 11"
+    ],
+    "development": [
+      "> 0.5%",
+      "not dead",
+      "not ie 11"
+    ]
   }
 }
