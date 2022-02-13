@@ -1,7 +1,7 @@
 {
   "name": "vott-replace-paths-web",
   "description": "Allows VoTT project files to be loaded after they have been moved.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "main": "dist/index.js",
   "scripts": {
     "start": "webpack-dev-server -d source-map",
@@ -12,7 +12,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">= 12.0.0"
+    "node": ">= 16.0.0"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.0.2",
