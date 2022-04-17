@@ -37,7 +37,6 @@
   "dependencies": {
     "crypto-js": "^4.1.1",
     "fflate": "^0.7.3",
-    "jszip": "^3.7.1",
     "md5": "^2.3.0"
   },
   "browserslist": {
