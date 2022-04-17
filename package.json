@@ -4,7 +4,7 @@
   "version": "0.1.2",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && cp index.js.LICENSE.txt dist/",
+    "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext=ts,tsx src",
     "test": "npx jest"
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "crypto-js": "^4.1.1",
-    "jszip": "^3.7.1",
+    "fflate": "^0.7.3",
     "md5": "^2.3.0"
   },
   "browserslist": {
