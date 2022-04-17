@@ -1,4 +1,4 @@
-import * as md5 from "md5";
+import md5 from "md5";
 import IDownloader from "../../views/downloader/interface";
 import IVottFileProvider from "../../datastore/vottFileProvider/interface";
 import IZipFileProvider from "../../datastore/zipFileProvider/interface";

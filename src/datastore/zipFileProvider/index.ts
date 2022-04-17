@@ -1,4 +1,4 @@
-import JSZip = require("jszip");
+import JSZip from "jszip";
 import IZipFileProvider from "./interface";
 
 export default class ZipFileProvider implements IZipFileProvider {
