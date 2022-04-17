@@ -2,10 +2,10 @@
   "name": "vott-replace-paths-web",
   "description": "Allows VoTT project files to be loaded after they have been moved.",
   "version": "0.1.2",
-  "main": "dist/index.js",
   "scripts": {
-    "start": "webpack-dev-server -d source-map",
-    "build": "webpack --mode=production",
+    "dev": "vite",
+    "build": "tsc && vite build && cp index.js.LICENSE.txt dist/",
+    "preview": "vite preview",
     "lint": "eslint --ext=ts,tsx src",
     "test": "npx jest"
   },
@@ -33,10 +33,7 @@
     "ts-jest": "^27.1.3",
     "ts-loader": "^9.2.6",
     "typescript": "^4.4.4",
-    "webpack": "^5.59.1",
-    "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.3.1",
-    "webpack-merge": "^5.8.0"
+    "vite": "^2.9.2"
   },
   "dependencies": {
     "crypto-js": "^4.1.1",
