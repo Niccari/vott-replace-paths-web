@@ -1,32 +1,47 @@
-import JSZip from "jszip";
+import { unzip, zip } from "fflate";
 import IZipFileProvider from "./interface";
 
 export default class ZipFileProvider implements IZipFileProvider {
   // eslint-disable-next-line class-methods-use-this
   public async compress(files: File[], filename: string): Promise<File> {
     try {
-      const jsZip = new JSZip();
-      files.forEach((f) => {
-        jsZip.file(f.name, f);
+      const fileContents: Record<string, Uint8Array> = {};
+      const promises = files.map(async (f) => {
+        const arrayBuffer = await f.arrayBuffer();
+        fileContents[f.name] = new Uint8Array(arrayBuffer);
       });
-      const zip = await jsZip.generateAsync({ type: "blob" });
-      return new File([zip], filename);
-    } catch {
-      return Promise.reject(new Error("compress failed"));
+      await Promise.all(promises);
+      const zippedContent: Uint8Array = await new Promise((resolve, reject) => {
+        zip(fileContents, { level: 9 }, (err, data) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(data);
+        });
+      });
+      return new File([zippedContent], filename);
+    } catch (err) {
+      return Promise.reject(new Error(`compress failed: ${err}`));
     }
   }
 
   // eslint-disable-next-line class-methods-use-this
   public async uncompress(file: File): Promise<File[]> {
     try {
-      const jsZip = await JSZip.loadAsync(file);
-      const promises = Object.values(jsZip.files).map(async (f) => {
-        const blob = await f.async("blob");
-        return new File([blob], f.name);
+      const buffer = await file.arrayBuffer();
+      return await new Promise((resolve, reject) => {
+        unzip(new Uint8Array(buffer), {}, (err, unzipped) => {
+          if (err) {
+            reject(err);
+          }
+          const promises = Object.entries(unzipped).map(async ([filename, data]) => {
+            return new File([data], filename);
+          });
+          resolve(Promise.all(promises));
+        });
       });
-      return Promise.all(promises);
-    } catch {
-      return Promise.reject(new Error("uncompress failed"));
+    } catch (err) {
+      return Promise.reject(new Error(`uncompress failed: ${err}`));
     }
   }
 }
