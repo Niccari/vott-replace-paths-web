@@ -41,6 +41,4 @@ export const encrypt = (message: string, secret: string): string => {
   }
 };
 
-export const encryptObject = (message: unknown, secret: string): string => {
-  return encrypt(JSON.stringify(message), secret);
-};
+export const encryptObject = (message: unknown, secret: string): string => encrypt(JSON.stringify(message), secret);

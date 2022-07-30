@@ -17,9 +17,7 @@ class EventHandler implements IEventHandler {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  private findElement = <T extends HTMLElement>(id: string): T | null => {
-    return document.querySelector(`#${id}`) as T | null;
-  };
+  private findElement = <T extends HTMLElement>(id: string): T | null => document.querySelector(`#${id}`) as T | null;
 
   private addFileSubmitEvent() {
     const tag = this.findElement<HTMLElement>("inputZip");

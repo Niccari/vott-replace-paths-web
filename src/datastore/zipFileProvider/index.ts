@@ -34,9 +34,7 @@ export default class ZipFileProvider implements IZipFileProvider {
           if (err) {
             reject(err);
           }
-          const promises = Object.entries(unzipped).map(async ([filename, data]) => {
-            return new File([data], filename);
-          });
+          const promises = Object.entries(unzipped).map(async ([filename, data]) => new File([data], filename));
           resolve(Promise.all(promises));
         });
       });

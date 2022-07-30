@@ -14,9 +14,7 @@ class Store implements IStore {
     this.usecase = usecase;
   }
 
-  public currentState = (): State => {
-    return this.state;
-  };
+  public currentState = (): State => this.state;
 
   private dispatchUpdate() {
     if (this.onUpdated) {

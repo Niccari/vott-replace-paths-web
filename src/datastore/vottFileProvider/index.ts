@@ -47,18 +47,12 @@ export default class VottFileProvider implements IVottFileProvider {
   }
 
   private async loadAssets(files: File[]): Promise<VottAsset[]> {
-    return Promise.all(
-      files.map(async (file) => {
-        return this.loadFile<VottAsset>(file);
-      })
-    );
+    return Promise.all(files.map(async (file) => this.loadFile<VottAsset>(file)));
   }
 
   // eslint-disable-next-line class-methods-use-this
   private async loadFile<T>(file: File): Promise<T> {
-    const data = await file.text().catch(() => {
-      return Promise.reject(new VottConversionError(ErrorCode.InvalidFileIncluded));
-    });
+    const data = await file.text().catch(() => Promise.reject(new VottConversionError(ErrorCode.InvalidFileIncluded)));
     try {
       return JSON.parse(data) as T;
     } catch (e) {

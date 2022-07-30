@@ -137,16 +137,16 @@ export default class VottProvider implements IVottProvider {
 
   public async saveAsync(vottModel: VottModel): Promise<void> {
     const files = this.vottFileProvider.toFiles(vottModel);
-    const file = await this.zipFileProvider.compress(files, "vott_migrated.zip").catch(() => {
-      return Promise.reject(new VottConversionError(ErrorCode.CompressionFailed));
-    });
+    const file = await this.zipFileProvider
+      .compress(files, "vott_migrated.zip")
+      .catch(() => Promise.reject(new VottConversionError(ErrorCode.CompressionFailed)));
     return this.downloader.download(file);
   }
 
   public async loadAsync(zipFile: File): Promise<VottModel> {
-    const files = await this.zipFileProvider.uncompress(zipFile).catch(() => {
-      return Promise.reject(new VottConversionError(ErrorCode.InvalidZipFile));
-    });
+    const files = await this.zipFileProvider
+      .uncompress(zipFile)
+      .catch(() => Promise.reject(new VottConversionError(ErrorCode.InvalidZipFile)));
     return this.vottFileProvider.loads(files);
   }
 }
