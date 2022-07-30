@@ -49,11 +49,6 @@
         "ts": "never"
       }
     ],
-    "max-len": ["warn", {
-      "code": 120,
-      "ignoreUrls": true,
-      "ignoreComments": true
-    }],
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": ["error"]
   }
