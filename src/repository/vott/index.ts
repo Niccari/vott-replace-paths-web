@@ -24,7 +24,7 @@ export default class VottProvider implements IVottProvider {
     srcTarget: VottAssetItem,
     newDirName: string,
     pathDelimiter: string,
-    azureSas?: string
+    azureSas?: string,
   ): VottAssetItem {
     const { type, name, timestamp, parent } = srcTarget;
     const baseName = name.split("?")[0].split("#")[0];
