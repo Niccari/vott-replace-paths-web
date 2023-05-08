@@ -1,3 +1,5 @@
+__🚨Support has been ended, because the VoTT is no longer maintained!!🚨__
+
 # vott-replace-paths-web
 Allows VoTT project files to be loaded after they have been moved. Supports both local file systems and the Azure Blob Storage.
 
