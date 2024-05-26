@@ -8,7 +8,7 @@ export const ErrorCode = {
   InvalidAssetType: 6,
   CompressionFailed: 7,
 } as const;
-export type ErrorCode = typeof ErrorCode[keyof typeof ErrorCode];
+export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 
 export class VottConversionError extends Error {
   public errorCode: ErrorCode;

@@ -21,7 +21,10 @@ export default class ZipFileProvider implements IZipFileProvider {
       });
       return new File([zippedContent], filename);
     } catch (err) {
-      return Promise.reject(new Error(`compress failed: ${err}`));
+      if (err instanceof Error) {
+        return Promise.reject(new Error(`compress failed: ${err.stack}`));
+      }
+      return Promise.reject(new Error(`compress failed`));
     }
   }
 
@@ -34,12 +37,15 @@ export default class ZipFileProvider implements IZipFileProvider {
           if (err) {
             reject(err);
           }
-          const promises = Object.entries(unzipped).map(async ([filename, data]) => new File([data], filename));
-          resolve(Promise.all(promises));
+          const files = Object.entries(unzipped).map(([filename, data]) => new File([data], filename));
+          resolve(files);
         });
       });
     } catch (err) {
-      return Promise.reject(new Error(`uncompress failed: ${err}`));
+      if (err instanceof Error) {
+        return Promise.reject(new Error(`uncompress failed: ${err.stack}`));
+      }
+      return Promise.reject(new Error(`uncompress failed`));
     }
   }
 }

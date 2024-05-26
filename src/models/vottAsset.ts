@@ -3,7 +3,7 @@ export const VottAssetType = {
   Video: 2,
   VideoFrame: 3,
 } as const;
-export type VottAssetType = typeof VottAssetType[keyof typeof VottAssetType];
+export type VottAssetType = (typeof VottAssetType)[keyof typeof VottAssetType];
 
 export type VottAssetItem = {
   id: string;

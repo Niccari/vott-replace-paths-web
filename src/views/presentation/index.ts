@@ -6,7 +6,7 @@ import IPresentation from "./interface";
 
 class Presentation implements IPresentation {
   // eslint-disable-next-line class-methods-use-this
-  private findElement = <T extends HTMLElement>(id: string): T | null => document.querySelector(`#${id}`) as T | null;
+  private findElement = <T extends HTMLElement>(id: string): T | null => document.querySelector(`#${id}`);
 
   private toggleSubmitButtonState = (state: State) => {
     const { vottFile, setting } = state;
