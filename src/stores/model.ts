@@ -7,7 +7,7 @@ export const LoadingState = {
   Error: 3,
   Success: 4,
 } as const;
-export type LoadingState = typeof LoadingState[keyof typeof LoadingState];
+export type LoadingState = (typeof LoadingState)[keyof typeof LoadingState];
 
 export interface State {
   loading: LoadingState;

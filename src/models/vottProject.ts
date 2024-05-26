@@ -4,7 +4,7 @@ export const VottProviderType = {
   Local: "localFileSystemProxy",
   Azure: "azureBlobStorage",
 } as const;
-export type VottProviderType = typeof VottProviderType[keyof typeof VottProviderType];
+export type VottProviderType = (typeof VottProviderType)[keyof typeof VottProviderType];
 
 export interface VottConnection {
   providerType: VottProviderType;
